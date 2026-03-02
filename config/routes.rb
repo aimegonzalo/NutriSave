@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'nutritional_profiles/show'
+  get 'nutritional_profiles/new'
+  get 'nutritional_profiles/edit'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -8,4 +11,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resource :nutritional_profile, only: [:show, :new, :create, :edit, :update]
 end
