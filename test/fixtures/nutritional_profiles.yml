@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  diet_type: MyString
+  goal: MyString
+  allergies: MyString
+  medical_conditions: MyString
+  excluded_ingredients: MyString
+  digestive_sensitivity: false
+
+two:
+  user: two
+  diet_type: MyString
+  goal: MyString
+  allergies: MyString
+  medical_conditions: MyString
+  excluded_ingredients: MyString
+  digestive_sensitivity: false

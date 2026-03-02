@@ -1,0 +1,2 @@
+class NutritionalRule < ApplicationRecord
+end

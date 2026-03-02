@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  dietary_tag: one
+
+two:
+  product: two
+  dietary_tag: two
