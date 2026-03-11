@@ -1,2 +1,12 @@
-<h1>NutritionalProfiles#edit</h1>
-<p>Find me in app/views/nutritional_profiles/edit.html.erb</p>
+<h1>Editar perfil nutricional</h1>
+
+<%= simple_form_for @nutritional_profile, url: nutritional_profile_path do |f| %>
+  <div><%= f.input :diet_type, label: "Tipo de dieta" %></div>
+  <div><%= f.input :goal, label: "Objetivo" %></div>
+  <div><%= f.input :allergies, label: "Alergias" %></div>
+  <div><%= f.input :medical_conditions, label: "Condiciones médicas" %></div>
+  <div><%= f.input :excluded_ingredients, label: "Ingredientes excluidos" %></div>
+  <div><%= f.input :digestive_sensitivity, as: :boolean, label: "Sensibilidad digestiva" %></div>
+
+  <div><%= f.button :submit, "Guardar cambios" %></div>
+<% end %>

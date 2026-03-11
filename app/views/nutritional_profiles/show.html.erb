@@ -1,2 +1,20 @@
-<h1>NutritionalProfiles#show</h1>
-<p>Find me in app/views/nutritional_profiles/show.html.erb</p>
+<h1>Mi Perfil Nutricional</h1>
+
+<p><strong>Tipo de dieta:</strong> <%= @nutritional_profile.diet_type %></p>
+
+<p><strong>Objetivo:</strong> <%= @nutritional_profile.goal %></p>
+
+<p><strong>Alergias:</strong> <%= @nutritional_profile.allergies %></p>
+
+<p><strong>Condiciones médicas:</strong> <%= @nutritional_profile.medical_conditions %></p>
+
+<p><strong>Ingredientes excluidos:</strong> <%= @nutritional_profile.excluded_ingredients %></p>
+
+<p>
+  <strong>Sensibilidad digestiva:</strong>
+  <%= @nutritional_profile.digestive_sensitivity ? "Sí" : "No" %>
+</p>
+
+<br>
+
+<%= link_to "Editar perfil", edit_nutritional_profile_path %>
