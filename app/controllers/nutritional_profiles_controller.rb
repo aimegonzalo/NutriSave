@@ -1,5 +1,7 @@
 class NutritionalProfilesController < ApplicationController
-    def show
+  before_action :authenticate_user!
+
+  def show
     @nutritional_profile = NutritionalProfile.find(params[:id])
     end
 
@@ -10,6 +12,15 @@ class NutritionalProfilesController < ApplicationController
 
   def edit
     @nutritional_profile = NutritionalProfile.find(params[:id])
+  end
+
+  def update
+    @nutritional_profile = NutritionalProfile.find(params[:id])
+    if @nutritional_profile.update(nutritional_profile_params)
+      redirect_to @nutritional_profile, notice: 'Actualizado correctamente.'
+    else
+      render :edit
+    end
   end
 
   def create

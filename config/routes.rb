@@ -13,5 +13,5 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   #Controlador del perfil nutricional
-  resource :nutritional_profile, only: [:show, :new, :create, :edit, :update]
+  resources :nutritional_profiles, only: [:show, :new, :create, :edit, :update]
 end
