@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'search/search'
 
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -14,4 +15,7 @@ Rails.application.routes.draw do
 
   #Controlador del perfil nutricional
   resources :nutritional_profiles, only: [:show, :new, :create, :edit, :update]
+  
+  #Controlador de loBúsqueda de los productos
+  get "/search", to: "search#search"
 end
