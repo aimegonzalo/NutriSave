@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  get 'search/search'
+  get 'products/index'
+  get 'products/show'
+  get 'products/compatibility'
+  get 'products/compare'
+  get 'products/alternatives'
 
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -15,7 +19,15 @@ Rails.application.routes.draw do
 
   #Controlador del perfil nutricional
   resources :nutritional_profiles, only: [:show, :new, :create, :edit, :update]
+
+  #Controlador de productos, comparación, compatibilidad y alternativas
+  resources :products, only: [:index, :show] do
+  member do
+    get :compatibility
+    get :compare
+    get :alternatives
+  end
+
   
-  #Controlador de loBúsqueda de los productos
-  get "/search", to: "search#search"
+end
 end
