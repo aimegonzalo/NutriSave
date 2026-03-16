@@ -1,2 +1,18 @@
-<h1>Search#search</h1>
-<p>Find me in app/views/search/search.html.erb</p>
+<h1>Menú de Búsqueda</h1>
+<%= simple_form_for :search, url: search_path, method: :get do |f| %>
+  <%= f.input :name, label: " Nombre del producto" %>
+  <%= f.submit "Buscar" %>
+<% end %>
+
+<% if @results.present? %>
+  <h2>Resultados de la búsqueda</h2>
+  <% @results.each do |product| %>
+    <div class="product">
+      <h3><%= product.name %></h3>
+      <p>Marca: <%= product.brand %></p>
+      <p>Categoría: <%= product.category %></p>
+    </div>
+  <% end %>
+<% else %>
+  <p>No se encontraron productos.</p>
+<% end %>
