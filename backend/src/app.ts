@@ -7,5 +7,5 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.listen(3000, ()=>{
-    console.log("Connectes to port 3000")
+    console.log("Connected to port 3000")
 });
