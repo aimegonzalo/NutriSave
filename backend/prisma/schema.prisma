@@ -15,9 +15,10 @@ datasource db {
 model User {
   id          Int         @id @default(autoincrement())
   email       String      @unique
-  name        String      @unique
-  picture_url String
-  phone       Int
+  username    String      @unique
+  password    String      
+  picture_url String?
+  phone       Int?
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
   favourites  Favourite[]
