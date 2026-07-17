@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   const { email, username, password, picture_url, phone } = req.body;
 
+  // typeof validations
   if (
     typeof email != "string" ||
     typeof username != "string" ||
@@ -17,6 +18,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("Invalid types in form");
   }
 
+  // Username validation
   const existingUser = await prisma.user.findUnique({
     where: {
       username: username,
@@ -26,7 +28,35 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("User already exists");
   }
 
-  
+  // email validation
+  const existingEmail = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (existingEmail) {
+    return res.status(400).send("Email already exists");
+  }
+
+  //Password Encrypt + New User
+  const encryptedPass = await bcrypt.hash(password, 10);
+  const newUser = await prisma.user.create({
+    data: {
+      email: email,
+      username: username,
+      password: encryptedPass,
+    },
+  });
+
+  //JWT
+  const token = jwt.sign(
+    { id: newUser.id, userName: newUser.username, email: newUser.email },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "1h" },
+  );
+
+  //Response
+  res.json({token}).send(`Successfully created user:${newUser.username}`)
 });
 
 //Login
