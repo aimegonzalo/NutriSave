@@ -56,20 +56,48 @@ router.post("/register", async (req, res) => {
   );
 
   //Response
-  res.json({ token })
+  res.json({ token });
 });
 
 //Login
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  // Required fields
   if (!username || !password) {
     return res.status(400).send("Username and password are required");
   }
 
+  //Typeof Data
   if (typeof username != "string" || typeof password != "string") {
     return res.status(400).send("Invalid types in form");
   }
+
+  //Find User
+  const user = await prisma.user.findUnique({
+    where: {
+      username: username,
+    },
+  });
+  if (!user) {
+    return res.status(400).send("User not found");
+  }
+  //Match password
+  const encryptedPass = bcrypt.compareSync(password, user.password);
+  if (!encryptedPass) {
+    return res.status(400).send("Invalid password");
+  }
+
+  //Creates Token
+  const token = jwt.sign(
+    { id: user.id, name: user.username, email: user.email },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "1h" },
+  );
+
+  //response
+  res.json({ token, username: user.username, email: user.email });
 });
+
 //Update User
 
 //Delete User
