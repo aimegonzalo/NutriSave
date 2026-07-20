@@ -56,11 +56,22 @@ router.post("/register", async (req, res) => {
   );
 
   //Response
-  res.json({token}).send(`Successfully created user:${newUser.username}`)
+  res.json({ token })
 });
 
 //Login
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Username and password are required");
+  }
 
+  if (typeof username != "string" || typeof password != "string") {
+    return res.status(400).send("Invalid types in form");
+  }
+});
 //Update User
 
 //Delete User
+
+export default router;
