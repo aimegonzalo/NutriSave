@@ -7,7 +7,7 @@ const router = express.Router();
 
 //Register
 router.post("/register", async (req, res) => {
-  const { email, username, password, picture_url, phone } = req.body;
+  const { email, username, password } = req.body;
 
   // typeof validations
   if (
@@ -99,6 +99,53 @@ router.post("/login", async (req, res) => {
 });
 
 //Update User
+router.put("/updateUser/:id", async (req, res) => {
+  const { email, username, password, picture_url, phone } = req.body;
+  const id = Number(req.params.id);
+
+  //Validating typeof
+  if (
+    (email !== undefined && typeof email !== "string") ||
+    (username !== undefined && typeof username !== "string") ||
+    (password !== undefined && typeof password !== "string") ||
+    (picture_url !== undefined && typeof picture_url !== "string") ||
+    (phone !== undefined && typeof phone !== "number")
+  ) {
+    return res.status(400).send("Invalid types in form");
+  }
+
+  //Finding User
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!existingUser) {
+    return res.status(400).send("User not found");
+  }
+
+  //New Password?
+  let currentPass = password;
+  const encryptedPass = bcrypt.compareSync(currentPass, existingUser.password);
+  if (!encryptedPass) {
+    currentPass = await bcrypt.hash(password, 10);
+  }
+
+  //Updating Data
+  const updateUser = await prisma.user.update({
+    where: { id: id },
+    data: {
+      email: email,
+      username: username,
+      password: currentPass,
+      picture_url: picture_url,
+      phone: phone,
+    },
+  });
+
+  //Response
+  res.json(`message: User ${updateUser.username} updated correctly`);
+});
 
 //Delete User
 
