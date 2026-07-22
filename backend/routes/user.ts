@@ -105,11 +105,11 @@ router.put("/updateUser/:id", async (req, res) => {
 
   //Validating typeof
   if (
-    (email !== undefined && typeof email !== "string") ||
-    (username !== undefined && typeof username !== "string") ||
-    (password !== undefined && typeof password !== "string") ||
-    (picture_url !== undefined && typeof picture_url !== "string") ||
-    (phone !== undefined && typeof phone !== "number")
+    (email != null && typeof email !== "string") ||
+    (username != null && typeof username !== "string") ||
+    (password != null && typeof password !== "string") ||
+    (picture_url != null && typeof picture_url !== "string") ||
+    (phone != null && typeof phone !== "number")
   ) {
     return res.status(400).send("Invalid types in form");
   }
@@ -127,7 +127,7 @@ router.put("/updateUser/:id", async (req, res) => {
   //New Password?
   let currentPass = password;
   const encryptedPass = bcrypt.compareSync(currentPass, existingUser.password);
-  if (!encryptedPass) {
+  if (currentPass != null && !encryptedPass) {
     currentPass = await bcrypt.hash(password, 10);
   }
 
