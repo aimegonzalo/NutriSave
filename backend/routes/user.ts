@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
     },
   });
   if (existingUser) {
-    return res.status(400).send("User already exists");
+    return res.status(409).send("User already exists");
   }
 
   // email validation
@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
     },
   });
   if (existingEmail) {
-    return res.status(400).send("Email already exists");
+    return res.status(409).send("Email already exists");
   }
 
   //Password Encrypt + New User
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
     },
   });
   if (!user) {
-    return res.status(400).send("User not found");
+    return res.status(404).send("User not found");
   }
   //Match password
   const encryptedPass = bcrypt.compareSync(password, user.password);
@@ -120,7 +120,7 @@ router.put("/updateUser/:id", async (req, res) => {
     },
   });
   if (!existingUser) {
-    return res.status(400).send("User not found");
+    return res.status(404).send("User not found");
   }
 
   //Updating Data
@@ -161,7 +161,7 @@ router.put("/updatePassword/:id", async (req, res) => {
     },
   });
   if (!existingUser) {
-    return res.status(400).send("User not found");
+    return res.status(404).send("User not found");
   }
 
   //New Password?
@@ -186,5 +186,24 @@ router.put("/updatePassword/:id", async (req, res) => {
 });
 
 //Delete User
+router.delete("/deleteUser/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  //Finding User
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!existingUser) {
+    return res.status(404).send("User not found");
+  }
+
+  //Deleting User
+  const deleteUser = await prisma.user.delete({
+    where: { id: id },
+  });
+  res.json(`message: user ${deleteUser.username} deleted correctly`);
+});
 
 export default router;
