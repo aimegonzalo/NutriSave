@@ -100,14 +100,13 @@ router.post("/login", async (req, res) => {
 
 //Update User
 router.put("/updateUser/:id", async (req, res) => {
-  const { email, username, password, picture_url, phone } = req.body;
+  const { email, username, picture_url, phone } = req.body;
   const id = Number(req.params.id);
 
   //Validating typeof
   if (
     (email != null && typeof email !== "string") ||
     (username != null && typeof username !== "string") ||
-    (password != null && typeof password !== "string") ||
     (picture_url != null && typeof picture_url !== "string") ||
     (phone != null && typeof phone !== "number")
   ) {
@@ -124,20 +123,12 @@ router.put("/updateUser/:id", async (req, res) => {
     return res.status(400).send("User not found");
   }
 
-  //New Password?
-  let currentPass = password;
-  const encryptedPass = bcrypt.compareSync(currentPass, existingUser.password);
-  if (currentPass != null && !encryptedPass) {
-    currentPass = await bcrypt.hash(password, 10);
-  }
-
   //Updating Data
   const updateUser = await prisma.user.update({
     where: { id: id },
     data: {
       email: email,
       username: username,
-      password: currentPass,
       picture_url: picture_url,
       phone: phone,
     },
@@ -145,6 +136,53 @@ router.put("/updateUser/:id", async (req, res) => {
 
   //Response
   res.json(`message: User ${updateUser.username} updated correctly`);
+});
+
+//Update User´s Password
+router.put("/updatePassword/:id", async (req, res) => {
+  const { password } = req.body;
+  const id = Number(req.params.id);
+
+  //Validations
+  if (password == null) {
+    return res.status(400).send("Password is required");
+  }
+  if (typeof password !== "string") {
+    return res.status(400).send("Invalid password type");
+  }
+  if (password.trim() === "") {
+    return res.status(400).send("Password cannot be empty");
+  }
+
+  //Finding User
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!existingUser) {
+    return res.status(400).send("User not found");
+  }
+
+  //New Password?
+  let currentPass = password;
+  const encryptedPass = bcrypt.compareSync(currentPass, existingUser.password);
+  if (!encryptedPass) {
+    currentPass = await bcrypt.hash(password, 10);
+  } else {
+    return res.status(400).send("Password cannot be the same as last one");
+  }
+
+  //Updating Data
+  const updateUser = await prisma.user.update({
+    where: { id: id },
+    data: {
+      password: currentPass,
+    },
+  });
+
+  //Response
+  res.json(`message: Password updated correctly`);
 });
 
 //Delete User
