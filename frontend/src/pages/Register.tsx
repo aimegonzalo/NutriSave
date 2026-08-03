@@ -1,8 +1,37 @@
-import React from "react";
+import { useRef } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  function handleSubmit() {}
+  const url = import.meta.env.VITE_BASE_URL;
+  const usernameRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
 
+  const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const userInputValues = {
+      username: usernameRef.current?.value,
+      password: passwordRef.current?.value,
+      email: emailRef.current?.value,
+    };
+
+    axios
+      .post(`${url}/api/users/register`, userInputValues)
+      .then((response) => {
+        localStorage.setItem("todo-token", JSON.stringify(response.data.token));
+        navigate("/");
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("Request completed");
+      });
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f5f7fa] px-4 py-6">
       <form
@@ -28,6 +57,7 @@ export default function Register() {
             className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-700 shadow-sm outline-none transition focus:border-[#2563eb] focus:ring-2 focus:ring-blue-100"
             id="email"
             placeholder="Email"
+            ref={emailRef}
             required
           />
         </div>
@@ -45,6 +75,7 @@ export default function Register() {
             type="text"
             placeholder="Username"
             required
+            ref={usernameRef}
           />
         </div>
 
@@ -61,6 +92,7 @@ export default function Register() {
             type="password"
             placeholder="********"
             required
+            ref={passwordRef}
           />
         </div>
 
