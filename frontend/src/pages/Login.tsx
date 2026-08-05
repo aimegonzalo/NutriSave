@@ -1,8 +1,39 @@
-import React from "react";
+import axios from "axios";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const url = import.meta.env.VITE_BASE_URL;
+  const usernameRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    axios
+      .post(`${url}/api/users/login`, {
+        username: usernameRef.current?.value,
+        password: passwordRef.current?.value,
+      })
+      .then((response) => {
+        localStorage.setItem("todo-token", response.data.token);
+        localStorage.setItem("user", response.data.username);
+        localStorage.setItem("email", response.data.email);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        console.log("Request completed");
+      });
+  }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f5f7fa] px-4 py-6">
+    <div
+      className="flex min-h-screen items-center justify-center bg-[#f5f7fa] px-4 py-6"
+      onSubmit={handleSubmit}
+    >
       <form className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
         <div className="mb-5 text-center">
           <h2 className="text-3xl font-bold text-[#2563eb]">Iniciar Sesión </h2>
@@ -22,6 +53,7 @@ export default function Login() {
             type="text"
             placeholder="Username"
             required
+            ref={usernameRef}
           />
         </div>
 
@@ -38,6 +70,7 @@ export default function Login() {
             type="password"
             placeholder="********"
             required
+            ref={passwordRef}
           />
         </div>
 
