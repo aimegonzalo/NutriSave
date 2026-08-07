@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import caroussel1 from "../assets/home/caroussel1.png";
 import caroussel2 from "../assets/home/caroussel2.png";
 import caroussel3 from "../assets/home/caroussel3.png";
 import logo from "../assets/logo/Nutrisave Logo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const navigate = useNavigate();
+
+  const userToken = localStorage.getItem("todo-token");
+
+  // Redirigirme al login si no tengo  token o expíró
+  useEffect(() => {
+    if (!userToken) {
+      navigate("/login");
+      return;
+    } else {
+      const payload = JSON.parse(atob(userToken.split(".")[1]));
+      if (payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem("todo-token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("email");
+        navigate("/login");
+      }
+    }
+  }, [navigate, userToken]);
+  // Slides (falta hacer que cambien automáticamente)
   const slides = [
     {
       image: caroussel1,
